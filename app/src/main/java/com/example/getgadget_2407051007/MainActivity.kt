@@ -10,7 +10,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,6 +74,8 @@ fun GetPhoneApp() {
 @Composable
 fun PhoneCard(phone: Handphone) {
 
+    var isFavorite by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,15 +87,32 @@ fun PhoneCard(phone: Handphone) {
             modifier = Modifier.padding(16.dp)
         ) {
 
-            Image(
-                painter = painterResource(id = phone.imageRes),
-                contentDescription = phone.nama,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop
-            )
+            Box {
+
+                Image(
+                    painter = painterResource(id = phone.imageRes),
+                    contentDescription = phone.nama,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop
+                )
+
+                IconButton(
+                    onClick = { isFavorite = !isFavorite },
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite)
+                            Icons.Filled.Favorite
+                        else
+                            Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) Color.Red else Color.White
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(10.dp))
 
