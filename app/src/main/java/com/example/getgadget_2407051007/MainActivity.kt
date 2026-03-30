@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -30,115 +31,157 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GetPhoneApp()
+            GetGadgetApp()
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GetPhoneApp() {
+fun GetGadgetApp() {
 
     val listPhone = HandphoneSource.dummyHandphone
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF121212))
-            .padding(16.dp)
-    ) {
-
-        item {
-            Text(
-                text = "GET GADGET",
-                color = Color.Red,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "Daftar Handphone Terbaru",
-                color = Color.LightGray,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Get Gadget", fontWeight = FontWeight.Bold)
+                }
             )
         }
+    ) { paddingValues ->
 
-        items(listPhone) { phone ->
-            PhoneCard(phone)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF5F5F5))
+        ) {
+
+            item {
+                Text(
+                    text = "Rekomendasi Populer",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(listPhone) { phone ->
+                        PopularCard(phone)
+                    }
+                }
+            }
+
+            item {
+                Text(
+                    text = "Daftar Menu Lengkap",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            items(listPhone) { phone ->
+                MenuCard(phone)
+            }
         }
     }
 }
 
 @Composable
-fun PhoneCard(phone: Handphone) {
+fun PopularCard(phone: Handphone) {
+
+    Card(
+        modifier = Modifier
+            .width(160.dp)
+            .padding(end = 12.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Box {
+
+            Image(
+                painter = painterResource(id = phone.imageRes),
+                contentDescription = phone.nama,
+                modifier = Modifier
+                    .height(140.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .background(Color(0x99000000))
+                    .padding(8.dp)
+            ) {
+                Text(phone.nama, color = Color.White, fontWeight = FontWeight.Bold)
+                Text(phone.harga, color = Color.LightGray, fontSize = 12.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun MenuCard(phone: Handphone) {
 
     var isFavorite by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A2A))
+            .padding(16.dp),
+        shape = RoundedCornerShape(20.dp)
     ) {
 
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Box {
 
-            Box {
+            Image(
+                painter = painterResource(id = phone.imageRes),
+                contentDescription = phone.nama,
+                modifier = Modifier
+                    .height(220.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
 
-                Image(
-                    painter = painterResource(id = phone.imageRes),
-                    contentDescription = phone.nama,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    contentScale = ContentScale.Crop
+            IconButton(
+                onClick = { isFavorite = !isFavorite },
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                Icon(
+                    imageVector = if (isFavorite)
+                        Icons.Filled.Favorite
+                    else
+                        Icons.Outlined.FavoriteBorder,
+                    contentDescription = null,
+                    tint = Color.White
                 )
-
-                IconButton(
-                    onClick = { isFavorite = !isFavorite },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                ) {
-                    Icon(
-                        imageVector = if (isFavorite)
-                            Icons.Filled.Favorite
-                        else
-                            Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favorite",
-                        tint = if (isFavorite) Color.Red else Color.White
-                    )
-                }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = phone.nama,
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = phone.merk,
-                color = Color.LightGray
-            )
-
-            Text(
-                text = phone.harga,
-                color = Color.Green,
-                fontWeight = FontWeight.Bold
-            )
-
-            Button(
-                onClick = { },
-                modifier = Modifier.align(Alignment.End)
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .background(Color(0xCC000000))
+                    .padding(16.dp)
             ) {
-                Text("Detail")
+                Text(phone.nama, color = Color.White, fontWeight = FontWeight.Bold)
+                Text(phone.merk, color = Color.LightGray)
+                Text("Harga: ${phone.harga}", color = Color.White)
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = { },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text("Pesan Sekarang")
+                }
             }
         }
     }
