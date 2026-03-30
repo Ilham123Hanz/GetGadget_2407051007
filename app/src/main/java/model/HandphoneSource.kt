@@ -1,5 +1,4 @@
 package com.example.getgadget_2407051007.model
-
 import com.example.getgadget_2407051007.R
 
 object HandphoneSource {
