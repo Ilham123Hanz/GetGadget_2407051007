@@ -1,30 +1,26 @@
 package com.example.getgadget_2407051007
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.getgadget_2407051007.model.Handphone
-import com.example.getgadget_2407051007.model.HandphoneSource
+import androidx.compose.ui.text.font.*
+import androidx.compose.ui.unit.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +29,21 @@ class MainActivity : ComponentActivity() {
             GetGadgetApp()
         }
     }
+}
+
+data class Handphone(
+    val nama: String,
+    val merk: String,
+    val harga: String,
+    @DrawableRes val imageRes: Int
+)
+
+object HandphoneSource {
+    val dummyHandphone = listOf(
+        Handphone("Oppo", "Oppo Reno 14 Pro 5G", "Rp 10.500.000", R.drawable.oppo),
+        Handphone("Redmi", "Redmi Note 15 Series", "Rp 6.000.000", R.drawable.redmi),
+        Handphone("Samsung", "Galaxy S25", "Rp 10.000.000", R.drawable.samsung)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,7 +114,7 @@ fun PopularCard(phone: Handphone) {
         Box {
 
             Image(
-                painter = painterResource(id = phone.imageRes),
+                painter = painterResource(phone.imageRes),
                 contentDescription = phone.nama,
                 modifier = Modifier
                     .height(140.dp)
@@ -139,7 +150,7 @@ fun MenuCard(phone: Handphone) {
         Box {
 
             Image(
-                painter = painterResource(id = phone.imageRes),
+                painter = painterResource(phone.imageRes),
                 contentDescription = phone.nama,
                 modifier = Modifier
                     .height(220.dp)
@@ -165,7 +176,11 @@ fun MenuCard(phone: Handphone) {
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .fillMaxWidth()
-                    .background(Color(0xCC000000))
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Color.Transparent, Color.Black)
+                        )
+                    )
                     .padding(16.dp)
             ) {
                 Text(phone.nama, color = Color.White, fontWeight = FontWeight.Bold)
